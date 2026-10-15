@@ -2,10 +2,24 @@
   "name": "opencode-diagnostics",
   "version": "0.1.0",
   "description": "OpenCode plugin: appends compiler/syntax diagnostics to write, edit and patch results",
-  "type": "module",
+  "author": "rojosinalma",
   "license": "MIT",
+  "type": "module",
   "main": "index.ts",
+  "keywords": [
+    "opencode",
+    "opencode-plugin",
+    "ai-agents",
+    "diagnostics",
+    "linting",
+    "developer-tools"
+  ],
+  "homepage": "https://github.com/rojosinalma/opencode-diagnostics",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rojosinalma/opencode-diagnostics"
+  },
   "devDependencies": {
-    "@opencode/plugin": "latest"
+    "@opencode/plugin": "2.0.30"
   }
 }
