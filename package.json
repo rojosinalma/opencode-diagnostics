@@ -1,0 +1,11 @@
+{
+  "name": "opencode-diagnostics",
+  "version": "0.1.0",
+  "description": "OpenCode plugin: appends compiler/syntax diagnostics to write, edit and patch results",
+  "type": "module",
+  "license": "MIT",
+  "main": "index.ts",
+  "devDependencies": {
+    "@opencode/plugin": "latest"
+  }
+}
