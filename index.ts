@@ -1,4 +1,4 @@
-// Type-only import: Bun resolves bare specifiers from the symlink's real path, where no node_modules exists.
+// Type-only import: the plugin directory may have no node_modules of its own, so nothing is imported at runtime.
 // Plugin.define is an identity function, so the plain object is the same definition.
 import type { Plugin } from "@opencode/plugin"
 import { execFile } from "node:child_process"
@@ -7,7 +7,7 @@ import os from "node:os"
 import path from "node:path"
 
 type Argv = readonly string[]
-type CheckerSpec = Argv | readonly Argv[] | null
+export type CheckerSpec = Argv | readonly Argv[] | null
 type TextContent = { readonly type: "text"; readonly text: string }
 type Content = TextContent | { readonly type: "file"; readonly uri: string; readonly mime: string; readonly name?: string }
 type Result = { readonly output?: unknown; readonly content?: string | ReadonlyArray<Content>; readonly metadata?: unknown }
@@ -19,8 +19,8 @@ export type Options = {
   pathPrepend: string[]
 }
 
-type Run = { code: number | null; out: string; failure?: string }
-type Plan = { argv: string[]; cwd: string }
+export type Run = { code: number | null; out: string; failure?: string }
+export type Plan = { argv: string[]; cwd: string }
 
 const EDIT_TOOLS = new Set(["write", "edit", "patch"])
 const C_FAMILY = (compiler: string): Argv[] => [
@@ -107,7 +107,7 @@ export function appendText(result: Result, text: string): Result {
   return { ...result, content: [...output, block] }
 }
 
-function planFor(file: string, spec: CheckerSpec | undefined): Plan | undefined {
+export function planFor(file: string, spec: CheckerSpec | undefined): Plan | undefined {
   if (!spec || spec.length === 0) return
   const candidates = (typeof spec[0] === "string" ? [spec] : spec) as readonly Argv[]
   for (const argv of candidates) {
@@ -147,7 +147,7 @@ function execute(plan: Plan, options: Options): Promise<Run> {
   })
 }
 
-function findings(name: string, run: Run, file: string, cwd: string): string[] {
+export function findings(name: string, run: Run, file: string, cwd: string): string[] {
   const lines = run.out.split("\n").map((l) => l.trimEnd()).filter((l) => l.trim() !== "")
   const filtered = (FILTERS[name] ?? ((l: string[]) => l))(lines, file, cwd)
   if (filtered.length > 0 || run.code === 0 || PROJECT_WIDE.has(name)) return filtered
@@ -178,7 +178,7 @@ function filterClangd(lines: string[], file: string): string[] {
   })
 }
 
-function patchPaths(input: unknown, result: Result): (string | undefined)[] {
+export function patchPaths(input: unknown, result: Result): (string | undefined)[] {
   const applied = (result.output as { applied?: { type?: string; target?: string }[] } | undefined)?.applied
   if (Array.isArray(applied)) return applied.filter((a) => a.type !== "delete").map((a) => a.target)
   const text = stringField(input, "patchText") ?? ""
@@ -203,7 +203,7 @@ function localBin(command: string, cwd: string): string | undefined {
   return dir && path.join(dir, "node_modules", ".bin", command)
 }
 
-function cap(lines: string[], max: number): string[] {
+export function cap(lines: string[], max: number): string[] {
   return lines.length <= max ? lines : [...lines.slice(0, max), `… ${lines.length - max} more`]
 }
 
@@ -212,7 +212,7 @@ function displayPath(file: string, baseDir: string): string {
   return rel.startsWith("..") || path.isAbsolute(rel) ? file : rel
 }
 
-function expandHome(p: string): string {
+export function expandHome(p: string): string {
   return p === "~" || p.startsWith("~/") ? path.join(os.homedir(), p.slice(1)) : p
 }
 

@@ -5,9 +5,15 @@ An [OpenCode](https://opencode.ai) plugin that appends compiler diagnostics to t
 (`ruby -wc`, `node --check`, `tsc --noEmit`, `gcc -fsyntax-only` / `g++`, …) and any errors are added
 to the tool output, so the model sees a broken edit immediately instead of discovering it at run
 time. Nothing is appended when the file is clean. Deliberately not a linter: syntax and type errors
-only.
+only. Configuration, design and troubleshooting are documented in `docs/`.
 
-## Install
+## Requirements
+
+- OpenCode 2.x running on Bun.
+- The checker binaries for the file types you want checked, on `PATH` or in `path_prepend`: `ruby`,
+  `node`, `tsc`, and `clangd` or `gcc`/`g++` by default. A missing checker is skipped, not an error.
+
+## Setup
 
 Clone into the global plugins directory (auto-discovered, no config needed):
 
@@ -34,25 +40,8 @@ Or reference it from `opencode.jsonc` when you need options:
 ```
 
 No runtime dependencies: `@opencode/plugin` is imported as types only, so no `bun install` is needed.
+All options are described in [docs/configuration.md](docs/configuration.md).
 
-## Options
+## License
 
-| key | default | meaning |
-|---|---|---|
-| `checkers` | built-in map (`rb`, `js`/`mjs`/`cjs`, `ts`/`tsx`/`mts`, `c`/`h`, `cc`/`cpp`/`cxx`/`hpp`/`hh`) | extension → argv (or array of argvs, first found wins). `null` disables an extension. Placeholders: `{file}`, `{dir}`, `{tsconfig_dir}`, `{compile_commands_dir}`. |
-| `timeout_ms` | `15000` | per-checker wall clock |
-| `max_lines` | `30` | cap on appended diagnostic lines |
-| `path_prepend` | `[]` | directories put in front of `PATH` for the checkers (`~` expands) |
-
-Overrides are merged over the defaults, so one key only changes that extension.
-
-## How it works
-
-1. `ctx.tool.hook("execute.after")` on `write`/`edit`/`patch` collects the touched paths (patches are parsed for theirs).
-2. The extension picks a checker; `tsc` runs project-wide from the nearest `tsconfig.json`, C-family checkers prefer `clangd --check` when a `compile_commands.json` is found.
-3. Output is filtered per tool (noise like `Syntax OK` or stack frames is dropped) and appended as a text block to the tool result.
-
-## Caveats
-
-- A plugin is loaded per location boot; a running location picks up changes only after a restart.
-- The checker binaries must be on `PATH` (or `path_prepend`); a missing one is skipped silently.
+MIT — see [LICENSE](LICENSE).
