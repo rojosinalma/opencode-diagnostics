@@ -1,0 +1,38 @@
+name: Feature request
+description: Propose a change or an addition
+title: "feat: "
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What are you trying to do that opencode-diagnostics does not let you do today?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposal
+      description: How should it work? A new default checker, an output filter, an option…
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      multiple: true
+      options:
+        - Default checkers
+        - Output filters
+        - Options / configuration
+        - Hook behaviour (which tools, result shaping)
+        - Documentation
+        - Other
+  - type: checkboxes
+    id: scope
+    attributes:
+      label: Scope check
+      options:
+        - label: This stays a syntax/type check, not a linter or formatter.
+        - label: I searched existing issues.

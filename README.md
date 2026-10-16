@@ -1,5 +1,9 @@
 # opencode-diagnostics
 
+[![run-tests](https://github.com/rojosinalma/opencode-diagnostics/actions/workflows/run-tests.yml/badge.svg)](https://github.com/rojosinalma/opencode-diagnostics/actions/workflows/run-tests.yml)
+[![release](https://img.shields.io/github/v/release/rojosinalma/opencode-diagnostics)](https://github.com/rojosinalma/opencode-diagnostics/releases)
+[![license](https://img.shields.io/github/license/rojosinalma/opencode-diagnostics)](LICENSE)
+
 An [OpenCode](https://opencode.ai) plugin that appends compiler diagnostics to the result of every
 `write`, `edit` and `patch` tool call. After the agent changes a file, the matching checker runs on it
 (`ruby -wc`, `node --check`, `tsc --noEmit`, `gcc -fsyntax-only` / `g++`, …) and any errors are added
@@ -9,11 +13,11 @@ only. Configuration, design and troubleshooting are documented in `docs/`.
 
 ## Requirements
 
-- OpenCode 2.x running on Bun.
+- [OpenCode](https://opencode.ai) ≥ 2.0, running on [Bun](https://bun.sh) ≥ 1.4.
 - The checker binaries for the file types you want checked, on `PATH` or in `path_prepend`: `ruby`,
   `node`, `tsc`, and `clangd` or `gcc`/`g++` by default. A missing checker is skipped, not an error.
 
-## Setup
+## Installation
 
 Clone into the global plugins directory (auto-discovered, no config needed):
 
@@ -40,8 +44,24 @@ Or reference it from `opencode.jsonc` when you need options:
 ```
 
 No runtime dependencies: `@opencode/plugin` is imported as types only, so no `bun install` is needed.
-All options are described in [docs/configuration.md](docs/configuration.md).
+
+## Usage
+
+Start (or restart) OpenCode and let the agent edit a file. When the edit breaks the syntax or the
+types, the tool result ends with a `[diagnostics] <tool> on <file>:` block listing the checker's
+errors; a clean edit gets nothing appended. Disable a file type with `"checkers": { "rb": null }` or
+add one with its argv — every option is described in [docs/configuration.md](docs/configuration.md).
+
+## Development
+
+```sh
+bun install
+bun test
+```
+
+Plugins are loaded when a location boots, so restart the OpenCode server after changing `index.ts`.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the layout, style and how to add a checker.
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+AGPL-3.0 — see [LICENSE](LICENSE). Copyright (C) 2026 rojosinalma.

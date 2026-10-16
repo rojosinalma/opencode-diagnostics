@@ -49,20 +49,29 @@ pull request (`.github/workflows/run-tests.yml`).
 ## Commits and PRs
 
 - Plain, descriptive commit messages in the imperative ("Add py_compile checker"). No attribution
-  trailers.
+  trailers. Every commit is GPG-signed (`git config commit.gpgsign true`).
 - One logical change per commit; `bun test` green before pushing.
 - Open a pull request against `main` describing what changed and why. Update the relevant docs in
-  the same PR.
+  the same PR. The `run-tests` check must be green before merging.
+
+## Releasing
+
+Bump `version` in `package.json`, move the `Unreleased` section of `CHANGELOG.md` under the new
+version, commit, create a signed tag `vX.Y.Z` and a GitHub release with that changelog section as
+its notes.
 
 ## Documentation
 
 | file | content |
 |---|---|
-| `README.md` | what it is, requirements, setup, licence — nothing else |
+| `README.md` | what it is, requirements, installation, usage, development, licence — nothing else |
 | `docs/configuration.md` | every option, the checker map, placeholders, defaults |
 | `docs/SDD.md` | design: hook, data flow, filters, decisions, scope, operations |
 | `docs/troubleshooting.md` | symptoms and fixes |
 | `CHANGELOG.md` | Keep a Changelog, one entry per release |
 | `CONTRIBUTING.md` | this file |
+| `SECURITY.md` | how to report a vulnerability, supported versions |
+| `CODE_OF_CONDUCT.md` | Contributor Covenant 2.1 |
+| `LICENSE` | AGPL-3.0 |
 
 New behaviour gets its option documented in `configuration.md` and its reasoning in `SDD.md`.

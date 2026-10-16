@@ -1,0 +1,59 @@
+name: Bug report
+description: Something does not work as documented
+title: "bug: "
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: Thanks for the report. Remove any token or private path from logs before pasting.
+  - type: input
+    id: version
+    attributes:
+      label: opencode-diagnostics version
+      description: The tag you cloned, or the commit from `git -C ~/.config/opencode/plugins/diagnostics log -1 --oneline`.
+      placeholder: v0.1.1
+    validations:
+      required: true
+  - type: input
+    id: opencode
+    attributes:
+      label: OpenCode and Bun versions
+      placeholder: opencode 2.0.30 / bun 1.4.2
+    validations:
+      required: true
+  - type: dropdown
+    id: install
+    attributes:
+      label: How is it loaded?
+      options:
+        - Cloned into ~/.config/opencode/plugins (auto-discovered)
+        - plugins[] entry in opencode.jsonc with options
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: What the agent edited, what you expected to see in the tool result, what you got.
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Edit a `.ts` file so it no longer compiles
+        2. Look at the tool result
+        3. …
+  - type: textarea
+    id: config
+    attributes:
+      label: Plugin options
+      description: The `options` block of the `plugins[]` entry, if any.
+      render: jsonc
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs
+      description: Relevant `[diagnostics]` lines from the OpenCode server log.
+      render: text
